@@ -63,14 +63,37 @@ class StringBuilder:
             for c in string:
                 self.__string_list.add(c)
 
+    def __copy_array_list(self, list_a, list_b):
+        for e in list_a:
+            list_b.add(e)
+       
     def setLength(self, new_length):
-        pass
+        if new_length < self.__capacity:
+            smaller_list = ArrayList(new_length)
+            for i in range(0, new_length):
+                smaller_list.add(self.__string_list.get(i))
+            self.__string_list = smaller_list
+            self.__capacity = new_length
+        elif new_length > self.__capacity:
+            larger_list = ArrayList(new_length)
+            self.__copy_array_list(self.__string_list, larger_list)
+            difference = new_length - self.__capacity
+            for i in range(self.__capacity, self.__capacity+difference):
+                larger_list.add(None)
+            self.__string_list = larger_list
+            self.__capacity = new_length
+        #else new length is the same as current length
+        #do nothing
 
     def ensureCapacity(self, min_capacity):
-        pass
+        if not self.__capacity >= min_capacity:
+            print('bigger')
+            bigger_list = ArrayList(min_capacity)
+            self.__copy_array_list(self.__string_list, bigger_list)
+            self.__string_list = bigger_list
 
     def append(self, element):
-        pass
+        self.__string_list.add(str(element))
 
     def delete(self, start, end):
         pass
@@ -94,8 +117,17 @@ class StringBuilder:
         return self.__str__()
 
     def __str__(self):
-        return functools.reduce(lambda string, c: string+c, self.__string_list)
+        return_string = []
+        for element in self.__string_list:
+            return_string.append(str(element))
+        return "".join(return_string)
     
     def __eq__(self):
         return False
     
+
+if __name__ == '__main__':
+    sb = StringBuilder("hello")
+    print(sb)
+    sb.setLength(14)
+    print(sb)
