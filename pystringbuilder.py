@@ -54,43 +54,88 @@ class StringBuilder:
             string (str): Initial string for the String Builder. 
             init_capacity (int): The starting size of the String Builder. Default 16 characters.
         '''
-        self.__capacity = init_capacity
-        self.__string_list = ArrayList(capacity = init_capacity)
 
-        #If a string is provided. Append each char to internal array list.
-        if not string == None:
+        if  string == None:
+            self.__capacity = init_capacity
+            self.__string_list = ArrayList(capacity = init_capacity)
+        else: #If a string is provided. Create ArrayList to the size of the string and append chars.
             string = str(string) #Ensure that it is a string.
+            self.__capacity = len(string) if init_capacity < len(string) else init_capacity #Different from Java. Ensures capacity for string but allowers user to
+                                                                                            #have a longer than string initial capacity.
+            self.__string_list = ArrayList(capacity = self.__capacity) 
             for c in string:
                 self.__string_list.add(c)
 
     def __copy_array_list(self, list_a, list_b):
+        '''
+        Insternal utility method for copying internal array list.
+
+        Parameters:
+            list_a (ArrayList): Source array list. 
+            list_b (ArrayList): Destination array list.
+        '''
         for e in list_a:
             list_b.add(e)
        
     def setLength(self, new_length):
+        '''
+        Sets the length (capacity) of the StringBuilder. If the new length is less than the current capacity, current capacity is shrunk to new length
+        and characters are truncated to new capacity. If the new length is larger than current capacity, current capacity is expanded to new length and
+        None is added up to new capacity.
+        
+        Parameters:
+            new_length (int): New desired length of existing StringBuilder.
+
+        Raises:
+            ValueError: If the new length is < 0.
+        '''
+        if new_length < 0:
+            raise ValueError("Length cannot be negative.")
+        
+        #New length is smaller than the current capacity. Make a new array list to size and copy over all elements that fit.
         if new_length < self.__capacity:
+            
             smaller_list = ArrayList(new_length)
-            for i in range(0, new_length):
+
+            #How far to copy over elements from old array list.
+            stop = self.__string_list.size() if self.__string_list.size() < new_length else new_length
+
+            for i in range(0, stop):
                 smaller_list.add(self.__string_list.get(i))
             self.__string_list = smaller_list
             self.__capacity = new_length
+
+        #Make bigger array list and copy over old elements. Add Nones(Nulls) to fill upto capacity.
         elif new_length > self.__capacity:
             larger_list = ArrayList(new_length)
             self.__copy_array_list(self.__string_list, larger_list)
-            difference = new_length - self.__capacity
-            for i in range(self.__capacity, self.__capacity+difference):
-                larger_list.add(None)
+            difference = new_length - self.__string_list.size() #How many nulls we need to add.
+            for i in range(0, difference):
+                larger_list.add(None)#Nulls
             self.__string_list = larger_list
             self.__capacity = new_length
+
         #else new length is the same as current length
         #do nothing
 
     def ensureCapacity(self, min_capacity):
+        '''
+        If current capacity is less than mimium capacity(min_capacity). Increase capacity to min_capacity maintaing existing characters,.
+        
+        Parameters:
+            min_capacity (int): The minium capacity of StringBuilder.
+
+        Raises:
+            ValueError: If the min_capacity is < 0.
+        '''
+        if min_capacity < 0:
+            raise ValueError("Minium capacity cannot be negative.")
+        
         if not self.__capacity >= min_capacity:
-            print('bigger')
             bigger_list = ArrayList(min_capacity)
             self.__copy_array_list(self.__string_list, bigger_list)
             self.__string_list = bigger_list
+            self.__capacity = min_capacity
 
     def append(self, element):
         self.__string_list.add(str(element))
@@ -127,7 +172,4 @@ class StringBuilder:
     
 
 if __name__ == '__main__':
-    sb = StringBuilder("hello")
-    print(sb)
-    sb.setLength(14)
-    print(sb)
+    pass
