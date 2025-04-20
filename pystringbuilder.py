@@ -76,12 +76,27 @@ class StringBuilder:
         '''
         for e in list_a:
             list_b.add(e)
-       
-    def setLength(self, new_length):
+
+    def __index_check(self, index):
+        if index < 0 or index >= self.__string_list.size():
+            raise IndexError("Index out of range.")
+        
+    def length(self):
         '''
         Sets the length (capacity) of the StringBuilder. If the new length is less than the current capacity, current capacity is shrunk to new length
         and characters are truncated to new capacity. If the new length is larger than current capacity, current capacity is expanded to new length and
         None is added up to new capacity.
+        
+        Returns:
+            int: Length of string.
+        '''
+        return self.__string_list.size()
+       
+    def setLength(self, new_length):
+        '''
+        Sets the length of the string in the StringBuilder. If the new length is less than the current, current length is shrunk to new length
+        and characters are truncated to new length. If the new length is larger than current, current length is expanded to new length and
+        None is added up to new length. Capacity is adjusted to length.
         
         Parameters:
             new_length (int): New desired length of existing StringBuilder.
@@ -92,8 +107,8 @@ class StringBuilder:
         if new_length < 0:
             raise ValueError("Length cannot be negative.")
         
-        #New length is smaller than the current capacity. Make a new array list to size and copy over all elements that fit.
-        if new_length < self.__capacity:
+        #New length is smaller than the length of the string. Make a new array list to size and copy over all elements that fit.
+        if new_length < self.__string_list.size():
             
             smaller_list = ArrayList(new_length)
 
@@ -106,7 +121,7 @@ class StringBuilder:
             self.__capacity = new_length
 
         #Make bigger array list and copy over old elements. Add Nones(Nulls) to fill upto capacity.
-        elif new_length > self.__capacity:
+        elif new_length > self.__string_list.size():
             larger_list = ArrayList(new_length)
             self.__copy_array_list(self.__string_list, larger_list)
             difference = new_length - self.__string_list.size() #How many nulls we need to add.
@@ -144,7 +159,8 @@ class StringBuilder:
         pass
 
     def deleteCharAt(self, index):
-        pass
+        self.__index_check(index)
+        self.__string_list.remove(index)
 
     def insert(self, offset, element):
         pass
@@ -172,4 +188,7 @@ class StringBuilder:
     
 
 if __name__ == '__main__':
-    pass
+    sb = StringBuilder("abc")
+    print(sb.length())
+    sb.append("zyx")
+    print(sb.length())
