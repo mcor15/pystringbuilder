@@ -17,7 +17,8 @@ class TestStringBuilderMethods(unittest.TestCase):
 
     def test_append(self):
         sb = StringBuilder("abc")
-        self.assertEquals(sb.length(), 3)
+        sb.append("xyz")
+        self.assertEquals(sb.length(), 6)
 
     def test_append(self):
         sb = StringBuilder("a")
@@ -54,6 +55,27 @@ class TestStringBuilderMethods(unittest.TestCase):
     def test_ToString(self):
         sb = StringBuilder ("Black Lotus")
         self.assertTrue(sb.toString() == "Black Lotus")
+
+
+    def test_Delete_Chars(self):
+        sb = StringBuilder ("abcxyz")
+        sb.delete(1,4)
+        self.assertEqual(sb.toString(), "az")
+
+    def test_Delete_All(self):
+        sb = StringBuilder ("abcxyz")
+        sb.delete(0,5)
+        self.assertEqual(sb.toString(), "")
+
+    def test_Delete_Out_Of_Bounds_End(self):
+        sb = StringBuilder ("abcxyz")
+        with self.assertRaises(IndexError):
+            sb.delete(0, 6)
+
+    def test_Delete_Start_And_End_Consecutive(self):
+        sb = StringBuilder ("abcxyz")
+        with self.assertRaises(ValueError):
+            sb.delete(3, 2)
 
 
         

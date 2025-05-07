@@ -135,7 +135,7 @@ class StringBuilder:
 
     def ensureCapacity(self, min_capacity):
         '''
-        If current capacity is less than mimium capacity(min_capacity). Increase capacity to min_capacity maintaing existing characters,.
+        If current capacity is less than mimium capacity(min_capacity). Increase capacity to min_capacity maintaing existing characters.
         
         Parameters:
             min_capacity (int): The minium capacity of StringBuilder.
@@ -153,10 +153,23 @@ class StringBuilder:
             self.__capacity = min_capacity
 
     def append(self, element):
-        self.__string_list.add(str(element))
+        element = str(element)
+        for c in element:
+            self.__string_list.add(c)
 
     def delete(self, start, end):
-        pass
+        if start > end:
+            raise ValueError("start must be less than end.")
+        self.__index_check(start)
+        self.__index_check(end)
+
+        chars_to_delete = end - start #How many chars to delete
+
+        #Each time deleteCharAt is called the array will shrink.
+        #So, begin at the start index and keep deleting for the number of chars needed.
+        #Each time the char at start is deleted, the chars to the right will move down to fill the gap. 
+        for i in range(0, chars_to_delete+1):
+            self.deleteCharAt(start)
 
     def deleteCharAt(self, index):
         self.__index_check(index)
@@ -169,7 +182,12 @@ class StringBuilder:
         pass
 
     def setCharAt(self, index, char):
-        pass
+        char = str(char)
+        if len(char) > 1 or len(char < 1):
+            raise ValueError("char must be of length of 1 (a char).")
+
+        self.__index_check(index)
+        self.__string_list.set(index, char)
 
     def reverse(self):
         pass
@@ -188,7 +206,6 @@ class StringBuilder:
     
 
 if __name__ == '__main__':
-    sb = StringBuilder("abc")
-    print(sb.length())
-    sb.append("zyx")
-    print(sb.length())
+    sb = StringBuilder("a")
+    sb.delete(0, 0)
+    print(sb.toString())
